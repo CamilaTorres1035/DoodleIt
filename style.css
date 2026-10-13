@@ -1,0 +1,194 @@
+/* --- CONFIGURACIÓN GENERAL --- */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #e2e8f0;
+    /* Fondo con patrón de puntitos usando gradientes radiales */
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 20px 20px;
+    min-height: 100vh; /* Asegura que al menos ocupe toda la pantalla visible */
+    font-family: sans-serif;
+    display: flex; /* Flexbox para centrar el contenido principal */
+    justify-content: center;
+}
+
+/* 
+   SISTEMA DE VISTAS (SPA)
+   Esta clase es clave. El "!important" asegura que si un elemento tiene esta clase,
+   desaparecerá de la pantalla sin importar qué otros estilos tenga.
+*/
+.hidden {
+    display: none !important;
+}
+
+/* --- ESTILOS DE LOS CONTENEDORES PRINCIPALES --- */
+#gallery-view {
+    display: flex;
+    flex-direction: column; /* Apila elementos hacia abajo */
+    align-items: center;
+    width: 100%;
+    gap: 20px; /* Espacio vertical entre el título, el botón y las fotos */
+    padding-bottom: 40px;
+}
+
+#studio-view {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* --- ESTILOS DE LA GALERÍA (EFECTO POLAROID Y ROTACIÓN) --- */
+#gallery {
+    display: flex;
+    flex-wrap: wrap; /* Permite que las fotos pasen a la siguiente línea si no caben */
+    gap: 40px;
+    padding: 40px;
+    justify-content: center;
+    max-width: 1000px;
+}
+
+#gallery img {
+    width: 220px;
+    background-color: white;
+    /* El relleno desigual (más espacio abajo) crea el efecto visual de foto Polaroid */
+    padding: 10px 10px 45px 10px; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    border: 1px solid #e2e8f0;
+    /* Transición suave para cuando pase el mouse por encima */
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+/* 
+   Rotación de las fotos según su posición para que se vean desordenadas naturalmente.
+   :nth-child(even) = pares, :nth-child(odd) = impares, :nth-child(3n) = múltiplos de 3
+*/
+#gallery img:nth-child(even) { transform: rotate(3deg); }
+#gallery img:nth-child(odd) { transform: rotate(-4deg); }
+#gallery img:nth-child(3n) { transform: rotate(2deg); }
+
+/* Al pasar el mouse, devuelve la rotación a 0 y agranda un 10% (scale 1.1) */
+#gallery img:hover {
+    transform: scale(1.1) rotate(0deg);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+    z-index: 10; /* La ponemos por encima de las demás */
+    position: relative;
+}
+
+/* --- ESTILOS DEL ESTUDIO (HERRAMIENTAS Y CANVAS) --- */
+#controls {
+    display: flex;
+    gap: 15px;
+    background: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    align-items: center;
+    margin: 20px 0;
+}
+
+.separator {
+    width: 2px;
+    height: 30px;
+    background-color: #e2e8f0;
+    margin: 0 10px;
+}
+
+canvas {
+    background-color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    cursor: crosshair; /* El cursor de cruceta da sensación de estar dibujando */
+}
+
+/* --- BOTONES COMUNES --- */
+button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.primary-btn { background-color: #10b981; color: white; }
+.primary-btn:hover { background-color: #059669; }
+.secondary-btn { background-color: #64748b; color: white; }
+.secondary-btn:hover { background-color: #475569; }
+#clearBtn { background-color: #ef4444; color: white; }
+#clearBtn:hover { background-color: #dc2626; }
+
+/* Clase que aplicaremos por JavaScript cuando el borrador esté activado */
+.active-tool {
+    background-color: #cbd5e1 !important;
+    border: 2px solid #334155;
+}
+
+/* --- ESTRUCTURA PARA EL BOTÓN ELIMINAR --- */
+.gallery-item {
+    position: relative; /* Necesario para posicionar la 'X' de forma absoluta dentro de este bloque */
+    display: inline-block;
+}
+
+/* Botón X oculto por defecto */
+.delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: none; /* no se ve hasta hacer hover en el contenedor */
+    font-size: 12px;
+    z-index: 20;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Muestra la 'X' solo cuando el mouse entra a la foto completa */
+.gallery-item:hover .delete-btn {
+    display: block;
+}
+
+/* --- ESTILOS DEL MODAL (LIGHTBOX) --- */
+.modal {
+    position: fixed; /* Se pega a la pantalla, cubriendo todo */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85); /* Fondo negro semitransparente */
+    z-index: 100; /* Lo más alto posible para que nada lo cubra */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    max-width: 90%;
+    max-height: 90%;
+    background-color: white;
+    padding: 15px 15px 70px 15px; /* Mantiene el estilo polaroid pero más grande */
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+#closeModal {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    color: white;
+    font-size: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: color 0.2s;
+}
+
+#closeModal:hover {
+    color: #ef4444;
+}

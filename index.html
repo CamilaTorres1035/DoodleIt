@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle Gallery</title>
+    <!-- Importación del archivo CSS para los estilos -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Importación de p5.js desde un CDN para tener acceso a las funciones de dibujo (Canvas) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+</head>
+<body>
+    <!-- 
+      VISTA 1: GALERÍA
+      Esta es la pantalla inicial. Funciona como una Single Page Application (SPA),
+      lo que significa que nunca recargamos la página, solo ocultamos y mostramos bloques (divs).
+    -->
+    <div id="gallery-view">
+        <h1 style="color: #334155; margin-top: 40px;">Mi Galería de Doodles</h1>
+        <button id="newDoodleBtn" class="primary-btn">Crear Nuevo Doodle</button>
+        <!-- Aquí se inyectan dinámicamente las imágenes guardadas desde JavaScript -->
+        <div id="gallery"></div>
+    </div>
+
+    <!-- 
+      VISTA 2: ESTUDIO DE DIBUJO
+      Tiene la clase "hidden" por defecto, así que no se ve al abrir la página.
+    -->
+    <div id="studio-view" class="hidden">
+        <!-- Panel de herramientas -->
+        <div id="controls">
+            <button id="backBtn" class="secondary-btn">Volver a la Galería</button>
+            <div class="separator"></div>
+            <!-- Input nativo de HTML para elegir color -->
+            <input type="color" id="colorPicker" value="#000000">
+            <!-- Input nativo para deslizar y elegir un valor numérico (el grosor) -->
+            <input type="range" id="brushSize" min="1" max="50" value="3">
+            <button id="eraserBtn" class="secondary-btn" title="Borrador">🧼</button>
+            <button id="clearBtn">Limpiar</button>
+            <button id="saveBtn" class="primary-btn">Guardar</button>
+        </div>
+        <!-- Contenedor donde p5.js creará la etiqueta <canvas> automáticamente -->
+        <main id="lienzo-container"></main>
+    </div>
+
+    <!-- 
+      MODAL: PANTALLA COMPLETA PARA AGRANDAR IMÁGENES
+      También está oculto. Se posicionará por encima de todo cuando le hagamos clic a un doodle.
+    -->
+    <div id="imageModal" class="hidden modal">
+        <!-- El símbolo &times; dibuja una "X" de cierre -->
+        <span id="closeModal">&times;</span>
+        <img src="" id="modalImage" class="modal-content">
+    </div>
+
+    <!-- El script principal siempre va al final para asegurar que el HTML ya cargó -->
+    <script src="sketch.js"></script>
+</body>
+</html>
